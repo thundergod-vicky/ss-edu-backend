@@ -18,8 +18,10 @@ import leadRoutes from './routes/leadRoutes.js';
 import teamRoutes from './routes/teamRoutes.js';
 import collegeRoutes from './routes/collegeRoutes.js';
 
-// Load environment variables
-dotenv.config();
+import { BACKEND_ROOT, getUploadPath } from './utils/paths.js';
+
+// Load environment variables absolutely (works correctly in Hostinger/Passenger)
+dotenv.config({ path: path.join(BACKEND_ROOT, '.env') });
 
 // Connect to MongoDB
 connectDB().then(() => {
@@ -41,7 +43,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Ensure local uploads directory exists on disk
-const uploadDir = path.resolve('public/uploads');
+const uploadDir = getUploadPath();
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }

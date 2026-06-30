@@ -2,6 +2,7 @@ import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
+import { getUploadPath } from '../utils/paths.js';
 
 const generateToken = (id, username) => {
   return jwt.sign({ id, username }, process.env.JWT_SECRET, {
@@ -62,7 +63,7 @@ export const updateAdminProfile = async (req, res) => {
     if (!user) {
       if (req.file) {
         try {
-          fs.unlinkSync(path.join('public/uploads', req.file.filename));
+          fs.unlinkSync(getUploadPath(req.file.filename));
         } catch (e) {}
       }
       return res.status(404).json({ message: 'User not found' });
@@ -81,7 +82,7 @@ export const updateAdminProfile = async (req, res) => {
       if (user.profilePic) {
         try {
           const filename = path.basename(user.profilePic);
-          const localFilePath = path.join('public/uploads', filename);
+          const localFilePath = getUploadPath(filename);
           if (fs.existsSync(localFilePath)) {
             fs.unlinkSync(localFilePath);
             console.log(`Deleted old profile pic: ${localFilePath}`);
@@ -104,7 +105,7 @@ export const updateAdminProfile = async (req, res) => {
   } catch (error) {
     if (req.file) {
       try {
-        fs.unlinkSync(path.join('public/uploads', req.file.filename));
+        fs.unlinkSync(getUploadPath(req.file.filename));
       } catch (e) {}
     }
     return res.status(500).json({ message: error.message });

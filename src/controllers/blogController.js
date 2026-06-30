@@ -1,13 +1,14 @@
 import Blog from '../models/Blog.js';
 import fs from 'fs';
 import path from 'path';
+import { getUploadPath } from '../utils/paths.js';
 
 // Helper function to delete local image file
 const deleteLocalImage = (imagePath) => {
   if (!imagePath) return;
   try {
     const filename = path.basename(imagePath);
-    const localFilePath = path.join('public/uploads', filename);
+    const localFilePath = getUploadPath(filename);
     if (fs.existsSync(localFilePath)) {
       fs.unlinkSync(localFilePath);
       console.log(`Deleted image from disk: ${localFilePath}`);

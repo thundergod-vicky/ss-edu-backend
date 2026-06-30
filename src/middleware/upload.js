@@ -1,8 +1,9 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { getUploadPath } from '../utils/paths.js';
 
-const uploadDir = './public/uploads';
+const uploadDir = getUploadPath();
 
 // Double check folder exists
 if (!fs.existsSync(uploadDir)) {

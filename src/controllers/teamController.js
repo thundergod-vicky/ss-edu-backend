@@ -1,6 +1,7 @@
 import TeamMember from '../models/TeamMember.js';
 import fs from 'fs';
 import path from 'path';
+import { getUploadPath } from '../utils/paths.js';
 
 // @desc    Get all team members
 // @route   GET /api/team
@@ -23,7 +24,7 @@ export const createTeamMember = async (req, res) => {
   if (!name || !role || !bio) {
     if (req.file) {
       try {
-        fs.unlinkSync(path.join('public/uploads', req.file.filename));
+        fs.unlinkSync(getUploadPath(req.file.filename));
       } catch (e) {}
     }
     return res.status(400).json({ message: 'Please provide all required fields (name, role, bio)' });
@@ -41,7 +42,7 @@ export const createTeamMember = async (req, res) => {
   } catch (error) {
     if (req.file) {
       try {
-        fs.unlinkSync(path.join('public/uploads', req.file.filename));
+        fs.unlinkSync(getUploadPath(req.file.filename));
       } catch (e) {}
     }
     res.status(500).json({ message: error.message });
@@ -57,7 +58,7 @@ export const updateTeamMember = async (req, res) => {
     if (!member) {
       if (req.file) {
         try {
-          fs.unlinkSync(path.join('public/uploads', req.file.filename));
+          fs.unlinkSync(getUploadPath(req.file.filename));
         } catch (e) {}
       }
       return res.status(404).json({ message: 'Team member not found' });
@@ -73,7 +74,7 @@ export const updateTeamMember = async (req, res) => {
       if (member.image) {
         try {
           const filename = path.basename(member.image);
-          const localPath = path.join('public/uploads', filename);
+          const localPath = getUploadPath(filename);
           if (fs.existsSync(localPath)) {
             fs.unlinkSync(localPath);
             console.log(`Deleted old team image: ${localPath}`);
@@ -90,7 +91,7 @@ export const updateTeamMember = async (req, res) => {
   } catch (error) {
     if (req.file) {
       try {
-        fs.unlinkSync(path.join('public/uploads', req.file.filename));
+        fs.unlinkSync(getUploadPath(req.file.filename));
       } catch (e) {}
     }
     res.status(500).json({ message: error.message });
@@ -111,7 +112,7 @@ export const deleteTeamMember = async (req, res) => {
     if (member.image) {
       try {
         const filename = path.basename(member.image);
-        const localPath = path.join('public/uploads', filename);
+        const localPath = getUploadPath(filename);
         if (fs.existsSync(localPath)) {
           fs.unlinkSync(localPath);
           console.log(`Deleted team image: ${localPath}`);
