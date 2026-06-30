@@ -6,7 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import mongoose from 'mongoose';
 
-import connectDB from './config/db.js';
+import connectDB, { dbErrorMsg } from './config/db.js';
 import { seedAdminUser } from './controllers/authController.js';
 import { seedTeamMembers } from './controllers/teamController.js';
 import { seedColleges } from './controllers/collegeController.js';
@@ -252,7 +252,10 @@ app.get('/', (req, res) => {
     <div class="grid">
       <div class="metric-card">
         <div class="metric-label">Database Connection</div>
-        <div class="metric-value" style="color: ${dbStatus === 'Connected' ? 'var(--success)' : 'var(--primary)'}">${dbStatus}</div>
+        <div class="metric-value" style="color: ${dbStatus === 'Connected' ? 'var(--success)' : 'var(--primary)'}">
+          ${dbStatus}
+          ${dbErrorMsg ? `<div style="font-size: 0.6rem; color: var(--primary); font-weight: 500; margin-top: 0.25rem; font-family: monospace; word-break: break-all;">${dbErrorMsg}</div>` : ''}
+        </div>
       </div>
       <div class="metric-card">
         <div class="metric-label">Uptime</div>
